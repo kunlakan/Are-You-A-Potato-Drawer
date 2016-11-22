@@ -6,10 +6,13 @@
 // ObjectRecognition class is
 //------------------------------------------------------------------------------
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <algorithm>
 #include <vector>
-//#include <vector>
 
+#include "opencv2/shape/shape.hpp"
 using namespace std;
 using namespace cv;
 
@@ -27,8 +30,5 @@ private:
 	Mat temp;
 	
 	void edgeDetection();
-	
-	int hausdorffDistance(const vector<Point> &a, const vector<Point> &b);
-	int getDistance(const vector<Point> &a, const vector<Point> &b);
-	
+	float hausdorffDistance(const vector<Point> &a, const vector<Point> &b);
 };

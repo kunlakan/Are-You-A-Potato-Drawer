@@ -17,9 +17,4 @@ using namespace cv;
 
 int main(int argc, char* argv[]){
 	Mat input = imread("square.jpg");
-
-	// Create ObjectRecognition object and passing in input
-	// Think about
-	
-
 }
