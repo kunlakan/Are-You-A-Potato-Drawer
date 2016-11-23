@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectRecognition.cpp" />
+    <ClCompile Include="TemplateImage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ObjectRecognition.h" />
+    <ClInclude Include="TemplateImage.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D3D040FF-4D3E-47DA-B6B2-9E63BB7E7804}</ProjectGuid>
