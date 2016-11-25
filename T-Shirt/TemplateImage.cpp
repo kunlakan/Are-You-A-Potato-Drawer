@@ -3,6 +3,7 @@
 //Do the images need to be converted to binary?
 TemplateImage::TemplateImage(string filename, int min, int max) {
 	this->image = imread(filename);
+	this->imageName = filename;
 	setMinStrokes(min);
 	setMaxStrokes(max);
 }
@@ -36,5 +37,17 @@ Mat TemplateImage::getImage() const {
 	return this->image;
 }
 void TemplateImage::setImage(const Mat &newImage) {
+	this->image = newImage;
+}
+
+string TemplateImage::getImageName() const {
+	return this->imageName;
+}
+void TemplateImage::setImageName(const string newName){
+	this->imageName = newName;
+}
+
+void TemplateImage::setImageAndImageName(const Mat &newImage, const string newName) {
+	this->imageName = newName;
 	this->image = newImage;
 }

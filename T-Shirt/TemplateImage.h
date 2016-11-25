@@ -25,10 +25,15 @@ public:
 	Mat getImage() const;
 	void setImage(const Mat &newImage);
 
+	string getImageName() const;
+	void setImageName(const string newName);
+	void setImageAndImageName(const Mat &newImage, const string newName);
+
 private:
 	int minStrokes = 1;
 	int maxStrokes = 1;
 	Mat image;
+	string imageName;
 };
 
 #endif /* defined(__TemplateImage__) */

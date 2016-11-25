@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DrawingRecognition.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ObjectRecognition.cpp" />
     <ClCompile Include="TemplateImage.cpp" />
     <ClCompile Include="TemplateLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ObjectRecognition.h" />
+    <ClInclude Include="DrawingRecognition.h" />
     <ClInclude Include="TemplateImage.h" />
     <ClInclude Include="TemplateLibrary.h" />
   </ItemGroup>
