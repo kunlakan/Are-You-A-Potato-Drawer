@@ -5,7 +5,6 @@
 //------------------------------------------------------------------------------
 // ASSUMPTION:
 //		- All templates used must be in grayscale.
-//		- input must be in grayscale.
 //------------------------------------------------------------------------------
 
 #include "DrawingRecognition.h"
@@ -17,29 +16,22 @@
 //------------------------------------------------------------------------------
 DrawingRecognition::DrawingRecognition()
 {
-	storkes = 0;
-}
-
-//------------------------ Single Parameter Constructor ------------------------
-// A single parameter constructor for class DrawingRecognition.
-// Precondition:	input must be created and not NULL.
-// Postcondition:	serachIMG is set to input, and strokes is set to 0.
-//------------------------------------------------------------------------------
-DrawingRecognition::DrawingRecognition(const Mat &input)
-{
-    DrawingRecognition(input, 0);
+	strokes = 0;
 }
 
 //------------------------- Two Parameter Constructor --------------------------
 // A two parameters constructor for class DrawingRecognition.
 // Precondition:	- input must be created and not NULL.
 //					- userNOS (NOS: number of strokes) must be >= 0. 
-// Postcondition:	serachIMG is set to input, and strokes is set to userNOS.
+// Postcondition:	- searchIMG is set to input and strokes is set to userNOS.
+//					- edgeIMG stores an edge image of searchIMG
 //------------------------------------------------------------------------------
 DrawingRecognition::DrawingRecognition(const Mat &input, const int &userNOS)
 {
-    searchIMG = input;
-    strokes = userNOF;
+	searchIMG = input;
+	strokes = userNOS;
+
+	detectEdge(searchIMG, edgeIMG);
 }
 
 //--------------------------------- Destructor ---------------------------------
@@ -47,43 +39,61 @@ DrawingRecognition::DrawingRecognition(const Mat &input, const int &userNOS)
 // Precondition:	None
 // Postcondition:	None
 //------------------------------------------------------------------------------
-DrawingRecognition::~DrawingRecognition(){}
+DrawingRecognition::~DrawingRecognition() {}
 
 
-void findBestMatch()
+//------------------------------ findBestMatch() -------------------------------
+// *** Region of Interest
+// Precondition:	None
+// Postcondition:	None
+//------------------------------------------------------------------------------
+void DrawingRecognition::findBestMatch()
 {
-	//matchTemplate();
+	float bestMatchValue = 0;
+	string bestMatchName = "";
+
+	Mat rotation90;	// rotate 90*
+	Mat rotation180; // flip vertically (0)
+	Mat rotation270; // flip horizontally of the 90* (1)
+
+
+					 // generate templateList
+
+	for each (auto &currentTemplate in templateList)
+	{
+		matchTemplate
+			// loop for scaling
+			// if the resize search img is smaller than the tempplate
+			// quit the loop
+	}
 }
 
-//------------------------------ edgeDetection() -------------------------------
-// Precondition :	
-// Postcondition :
+
+//---------------------------- PRIVATE: detectEdge -----------------------------
+// Detects edge of the input image.
+// Preconditions:	- input must be a gray-level image.
+//					- output must be declaired outside of this function.
+// Postconditions:	output is an edge image of the input.
 //------------------------------------------------------------------------------
-void DrawingRecognition::edgeDetection(Mat &img)
+void DrawingRecognition::detectEdge(const Mat &input, Mat &output)
 {
 	double sigmaX = 2.0;
 	double sigmaY = 2.0;
-	
+
 	double threshold1 = 20;
 	double threshold2 = 60;
 
-	flip(img, img, 1);
-	GaussianBlur(img, img, Size(7, 7), sigmaX, sigmaY);
-	Canny(img, img, threshold1, threshold2);
+	flip(input, output, 1);
+	GaussianBlur(output, output, Size(7, 7), sigmaX, sigmaY);
+	Canny(output, output, threshold1, threshold2);
 }
 
+//----------------------------- PRIVATE: rotate90 ------------------------------
+// Rotate input image by 90 degree.
+// Preconditions:	None.
+// Postconditions:	output is an edge image of the input.
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-/*float ObjectRecognition::hausdorffDistance(const vector<Point> &a, const vector<Point> &b)
-{
-	//findContours of inputs and template image.
-
-	HausdorffDistanceExtractor* hd = createHausdorffDistanceExtractor();
-
-	float distanceAB = hd->computeDistance(a, b);
-	float distanceBA = hd->computeDistance(b, a);
-
-	delete(hd);
-
-	return max(distanceAB, distanceBA);
-}*/
+void DrawingRecognition::rotate90(Mat &input) {
+	transpose(input, input);
+	flip(input, input, 0);
+}
