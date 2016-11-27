@@ -21,10 +21,10 @@
     <ClCompile Include="TemplateImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TemplateLibrary.cpp">
+    <ClCompile Include="DrawingRecognition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DrawingRecognition.cpp">
+    <ClCompile Include="TemplateLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,10 +32,10 @@
     <ClInclude Include="TemplateImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TemplateLibrary.h">
+    <ClInclude Include="DrawingRecognition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrawingRecognition.h">
+    <ClInclude Include="TemplateLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

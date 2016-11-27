@@ -1,3 +1,8 @@
+//------------------------------------------------------------------------------
+// TemplateImage.h
+// Created by Kulsoom Mansoor
+// Created on 11/23/2016
+//------------------------------------------------------------------------------
 #pragma once
 
 #ifndef __TemplateImage__
@@ -7,6 +12,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <string>
+#include <iostream>
 using namespace cv;
 using namespace std;
 

@@ -1,3 +1,8 @@
+//------------------------------------------------------------------------------
+// TemplateImage.cpp
+// Created by Kulsoom Mansoor
+// Created on 11/23/2016
+//------------------------------------------------------------------------------
 #include "TemplateImage.h"
 
 //Do the images need to be converted to binary?
