@@ -8,6 +8,8 @@
 //Do the images need to be converted to binary?
 TemplateImage::TemplateImage(string filename, int min, int max) {
 	this->image = imread(filename);
+	cvtColor(this->image, this->image, COLOR_BGR2GRAY);
+
 	this->imageName = filename;
 	setMinStrokes(min);
 	setMaxStrokes(max);
