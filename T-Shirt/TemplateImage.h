@@ -20,13 +20,10 @@ class TemplateImage {
 
 public:
 
-	TemplateImage(string, int, int);
+	TemplateImage(string, int);
 
-	int getMaxStrokes() const;
-	void setMaxStrokes(const int);
-
-	int getMinStrokes() const;
-	void setMinStrokes(const int);
+	int getNumOfCorners() const;
+	void setNumOfCorners(int);
 
 	Mat getImage() const;
 	void setImage(const Mat &newImage);
@@ -36,8 +33,7 @@ public:
 	void setImageAndImageName(const Mat &newImage, const string newName);
 
 private:
-	int minStrokes = 1;
-	int maxStrokes = 1;
+	int numOfCorners = 1;
 	Mat image;
 	string imageName;
 };

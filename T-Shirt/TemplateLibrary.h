@@ -4,7 +4,8 @@
 // Created on 11/26/2016
 //------------------------------------------------------------------------------
 // NOTE:
-//	-Keys of the map will be formed using the min and max stroke values: "min:max"
+//	-Keys of the map are int values representing the number of corners for the
+//   shape
 //	-The value for each key is a vector containing TemplateImage objects whose
 //	 min and max strokes are the same as the key.
 //------------------------------------------------------------------------------
@@ -27,16 +28,16 @@ public:
 
 	void addTemplateImage(const TemplateImage&);
 
-	TemplateImage removeTemplateImage(const int, const int, const string imageName); 
+	TemplateImage removeTemplateImage(const int, const string imageName); 
 
-	string getMinMaxKey(const string) const; 
-	TemplateImage getTemplateImage(const int, const int, const string imageName) const; 
-	vector<TemplateImage> getTemplateImageList(const int, const int) const; 
+	int getMinMaxKey(const string) const; 
+	TemplateImage getTemplateImage(const int, const string imageName) const; 
+	vector<TemplateImage> getTemplateImageList(const int) const; 
 
-	vector<string> getAllKeys() const; 
+	vector<int> getAllKeys() const; 
 	vector<TemplateImage> getAllTemplateImages() const; 
 
-	vector<TemplateImage> removeTemplateImageList(const int, const int); 
+	vector<TemplateImage> removeTemplateImageList(const int); 
 
 	void emptyLibrary(); 
 
@@ -49,7 +50,7 @@ public:
 	void printLibrary();
 
 private:
-	std::map<string, vector<TemplateImage>> library;
+	std::map<int, vector<TemplateImage>> library;
 
 };
 

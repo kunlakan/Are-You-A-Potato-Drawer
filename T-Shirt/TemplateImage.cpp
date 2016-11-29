@@ -5,38 +5,22 @@
 //------------------------------------------------------------------------------
 #include "TemplateImage.h"
 
-//Do the images need to be converted to binary?
-TemplateImage::TemplateImage(string filename, int min, int max) {
-	this->image = imread(filename);
-	cvtColor(this->image, this->image, COLOR_BGR2GRAY);
+TemplateImage::TemplateImage(string filename, int corners) {
+	this->image = imread(filename, IMREAD_GRAYSCALE);
 
 	this->imageName = filename;
-	setMinStrokes(min);
-	setMaxStrokes(max);
+	setNumOfCorners(corners);
 }
 
-int TemplateImage::getMaxStrokes() const {
-	return this->maxStrokes;
+int TemplateImage::getNumOfCorners() const{
+	return this->numOfCorners;
 }
-
-void TemplateImage::setMaxStrokes(const int max) {
-	if (max < 0) {
-		this->maxStrokes = 1;
+void TemplateImage::setNumOfCorners(int newCorners) {
+	if (newCorners <= 0) {
+		this->numOfCorners = 1;
 	}
 	else {
-		this->maxStrokes = max;
-	}
-}
-
-int TemplateImage::getMinStrokes() const {
-	return this->minStrokes;
-}
-void TemplateImage::setMinStrokes(const int min) {
-	if (min < 0) {
-		this->minStrokes = 1;
-	}
-	else {
-		this->minStrokes = min;
+		this->numOfCorners = newCorners;
 	}
 }
 

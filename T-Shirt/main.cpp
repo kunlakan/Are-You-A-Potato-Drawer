@@ -20,11 +20,11 @@ int main(int argc, char* argv[]){
 	Mat input = imread("template_images/square.jpg");
 
 	/*
-	TemplateImage square("template_images/square.jpg", 1, 4);
-	TemplateImage rect("template_images/rectangle.jpg", 1, 4);
-	TemplateImage triangle("template_images/triangle.jpg", 1, 3);
-	TemplateImage hexagon("template_images/hexagon.jpg", 1, 6);
-	TemplateImage hexagon2("template_images/hexagon_2.jpg", 1, 6);
+	TemplateImage square("template_images/square.jpg", 4);
+	TemplateImage rect("template_images/rectangle.jpg", 4);
+	TemplateImage triangle("template_images/triangle.jpg", 3);
+	TemplateImage hexagon("template_images/hexagon.jpg", 6);
+	TemplateImage hexagon2("template_images/hexagon_2.jpg", 6);
 
 	TemplateLibrary library;
 	library.addTemplateImage(square);
@@ -34,15 +34,15 @@ int main(int argc, char* argv[]){
 	library.addTemplateImage(hexagon2);
 
 	
-	TemplateImage get = library.getTemplateImage(1, 6, "template_images/hexagon.jpg");
+	TemplateImage get = library.getTemplateImage(6, "template_images/hexagon.jpg");
 	
-	vector<TemplateImage> getList = library.getTemplateImageList(1, 6);
+	vector<TemplateImage> getList = library.getTemplateImageList(6);
 
-	vector<string> allKeys = library.getAllKeys();
+	vector<int> allKeys = library.getAllKeys();
 
 	vector<TemplateImage> allImages = library.getAllTemplateImages();
 
-	string key = library.getMinMaxKey("template_images/triangle.jpg");
+	int key = library.getMinMaxKey("template_images/triangle.jpg");
 
 	
 	//std::cout << "Before" << endl;
@@ -50,21 +50,9 @@ int main(int argc, char* argv[]){
 	//std::cout << "" << endl;
 	//std::cout << "After" << endl;
 
-	//TemplateImage del = library.removeTemplateImage(1, 4, "template_images/rectangle.jpg");
-
+	//TemplateImage del = library.removeTemplateImage(4, "template_images/rectangle.jpg");
 	
-	//std::cout << "Before" << endl;
-	//library.printLibrary();
-	//std::cout << "" << endl;
-	//std::cout << "After" << endl;
-
-	
-	//vector<TemplateImage> delList = library.removeTemplateImageList(1, 6);
-
-	//std::cout << "Before" << endl;
-	//library.printLibrary();
-	//std::cout << "" << endl;
-	//std::cout << "After" << endl;
+	//vector<TemplateImage> delList = library.removeTemplateImageList(6);
 
 	//library.emptyLibrary();
 
@@ -78,9 +66,9 @@ int main(int argc, char* argv[]){
 
 		
 		//for (int j = 0; j < allImages.size(); j++) {
-			//std::cout << allImages[j].getImageName() << endl;
+		//	std::cout << allImages[j].getImageName() << endl;
 		//}
-
+		//std::cout << "" << endl;
 		
 		//if (library.isEmpty()) {
 			//std::cout << "empty" << endl;
@@ -97,7 +85,7 @@ int main(int argc, char* argv[]){
 		//}
 		//std::cout << "" << endl; 
 
-		//library.printLibrary();
-		//std::cout << "" << endl; 
+		library.printLibrary();
+		std::cout << "" << endl; 
 	} */
 }

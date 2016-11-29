@@ -4,7 +4,8 @@
 // Created on 11/26/2016
 //------------------------------------------------------------------------------
 // NOTE:
-//	-Keys of the map will be formed using the min and max stroke values: "min:max"
+//	-Keys of the map are int values representing the number of corners for the
+//   shape
 //	-The value for each key is a vector containing TemplateImage objects whose
 //	 min and max strokes are the same as the key.
 //------------------------------------------------------------------------------
@@ -17,20 +18,18 @@ addTemplateImage()
 Adds a template object to the library.
 
 Pre-condition:
-The argument passed in should not be null and have proper min and max strokes
+The argument passed in should not be null and have proper number of corners
 
 Post-condition:
-The min and max stokes of the template image will be used as a key: "min:max". If
+The number of corners of the template image will be used as a key. If
 the key already exists, then the template image added to the vector associated
 with the key. If the key doesn't exist, then a new key is created along with
 its associated vector. The template image is then added to the new vector.
 */
 void TemplateLibrary::addTemplateImage(const TemplateImage& image) {
-	string min = to_string(image.getMinStrokes());
-	string max = to_string(image.getMaxStrokes());
-	string key = min + ":" + max;
 
-	
+	int key = image.getNumOfCorners();
+
 	if (this->library.count(key) == 0) {
 		vector<TemplateImage> newShape;
 		newShape.push_back(image);
@@ -47,21 +46,20 @@ removeTemplateImage()
 removes a template object to the library.
 
 Pre-condition:
-The first two arguments are the min and max strokes of the template image, 
-respectively. They make the key "min:max". This key has to exist in the map
-or else an error will be thrown. The third argument is for the name of the
-template image. There must be a template image with this name or else an exception
-will be thrown. The map must not be empty, or else an exception will be thrown
+The first argument is the number of corners of the template image. 
+This key has to exist in the map
+or else an error will be thrown. The second argument is for the name of the
+template image. There must be a template image with this name in the map or else 
+an exception will be thrown. The map must not be empty, or else an exception will 
+be thrown
 
 Post-condition:
-If the key formed by the first two arguments exists and the image name also
+If the key formed by the first argument exists and the image name also
 exists, then that template image will be deleted from the map. This method
 returns the deleted TemplateImage object. 
 */
-TemplateImage TemplateLibrary::removeTemplateImage(const int min, const int max, const string imageName) {
-	string minS = to_string(min);
-	string maxS = to_string(max);
-	string key = minS + ":" + maxS;
+TemplateImage TemplateLibrary::removeTemplateImage(const int corners, const string imageName) {
+	int key = corners;
 
 	if (this->library.empty()) {
 		throw "Library is empty"; 
@@ -96,15 +94,15 @@ Post-condition:
 If the map has an TemplateImage with the name same as the argument passed in,
 then they key of that TemplateImage is passed in.
 */
-string TemplateLibrary::getMinMaxKey(const string imageName) const {
+int TemplateLibrary::getMinMaxKey(const string imageName) const {
 
 	if (this->library.empty()) {
 		throw "Library is empty"; 
 	}
 	else {
-		map<string, vector<TemplateImage>>::const_iterator elm;
+		map<int, vector<TemplateImage>>::const_iterator elm;
 		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
-			string key = elm->first;
+			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
 			for (int i = 0; i < val.size(); i++) {
@@ -120,23 +118,21 @@ string TemplateLibrary::getMinMaxKey(const string imageName) const {
 
 /*
 getTemplateImage()
-Returns the TemplateImage whose key is formed by the first two arguments passed
-in and whose name matches the third argument passed.
+Returns the TemplateImage whose key is formed by the first argument passed
+in and whose name matches the second argument passed.
 
 Pre-condition:
-The first two arguments passed are formed into a key: "min:max". This key
-should exist in the map, or else an exception is thrown. The third argument
+The first argument passed is used as a key. This key
+should exist in the map, or else an exception is thrown. The second argument
 is the name of the TemplateImage you are searching for. This name must exist in
 the map or else an exception is thrown.
 
 Post-condition:
-If the key formed by the first two arguments exist and if the name of the 
+If the key formed by the first argument exist and if the name of the 
 TemplateImage exists, then the corresponding TemplateImage is returned.
 */
-TemplateImage TemplateLibrary::getTemplateImage(int min, int max, string imageName) const {
-	string minS = to_string(min);
-	string maxS = to_string(max);
-	string key = minS + ":" + maxS;
+TemplateImage TemplateLibrary::getTemplateImage(int corners, string imageName) const {
+	int key = corners;
 
 	if (this->library.empty()) {
 		throw "Library is empty"; 
@@ -164,17 +160,15 @@ getTemplateImageList()
 Returns a vector<TemplateImage> using the two arguments passed in.
 
 Pre-condition:
-The arguments passed in are using to form the key: "min:max". This key must exist
+The argument passed in are using to form the key. This key must exist
 in the map, or else an exception is thrown.
 
 Post-condition:
-If the key formed by the arguments passed in exists, then a vector containing all
+If the key formed by the argument passed in exists, then a vector containing all
 the TemplateImage objects will be returned.
 */
-vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int min, const int max) const {
-	string minS = to_string(min);
-	string maxS = to_string(max);
-	string key = minS + ":" + maxS;
+vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int corners) const {
+	int key = corners;
 
 	if (this->library.empty()) {
 		throw "Library is empty"; 
@@ -197,14 +191,14 @@ The map should not be empty, or else an exception is thrown.
 Post-condition:
 If the map is not empty, a vector containing all the keys is returned.
 */
-vector<string> TemplateLibrary::getAllKeys() const {
+vector<int> TemplateLibrary::getAllKeys() const {
 	if (this->library.empty()) {
 		throw "Library is empty";
 	}
 	else {
-		vector<string> keys;
+		vector<int> keys;
 
-		map<string, vector<TemplateImage>>::const_iterator key;
+		map<int, vector<TemplateImage>>::const_iterator key;
 		for (key = this->library.begin(); key != this->library.end(); ++key) {
 			keys.push_back(key->first);
 		}
@@ -232,9 +226,9 @@ vector<TemplateImage> TemplateLibrary::getAllTemplateImages() const {
 	else {
 		vector<TemplateImage> images;
 
-		map<string, vector<TemplateImage>>::const_iterator elm;
+		map<int, vector<TemplateImage>>::const_iterator elm;
 		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
-			string key = elm->first;
+			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
 			vector<TemplateImage>::const_iterator elm;
@@ -253,22 +247,20 @@ Removes the value of a key in the map. The value is a vector of TemplateImage
 objects.
 
 Pre-condition:
-The arguments passed in are used to create the key: "min:max". This key must
+The argument passed in is used to create the key. This key must
 exist in the map or else an exception will be thrown.
 
 Post-condition:
-The the key formed using the arguments passed in exists in the map, then
+If the the key formed using the argument passed in exists in the map, then
 value of that key is deleted from the map. This value is a vector containing
 all the TemplateImages of that key. This method returns the deleted vector.
 */
-vector<TemplateImage> TemplateLibrary::removeTemplateImageList(const int min, const int max) {
+vector<TemplateImage> TemplateLibrary::removeTemplateImageList(const int corners) {
 	if (this->library.empty()) {
 		throw "Library is empty";
 	}
 	else {
-		string minS = to_string(min);
-		string maxS = to_string(max);
-		string key = minS + ":" + maxS;
+		int key = corners;
 
 		if (this->library.count(key) != 0) {
 			vector<TemplateImage> ref = this->library.at(key);
@@ -298,9 +290,9 @@ void TemplateLibrary::emptyLibrary() {
 	}
 	else {
 
-		map<string, vector<TemplateImage>>::const_iterator elm;
+		map<int, vector<TemplateImage>>::const_iterator elm;
 		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
-			string key = elm->first;
+			int key = elm->first;
 			this->library.at(key).clear();
 		}
 
@@ -355,9 +347,9 @@ int TemplateLibrary::getNumberOfTemplateImages() const {
 	}
 	else {
 
-		map<string, vector<TemplateImage>>::const_iterator elm;
+		map<int, vector<TemplateImage>>::const_iterator elm;
 		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
-			string key = elm->first;
+			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
 			for (int i = 0; i < val.size(); i++) {
@@ -386,9 +378,9 @@ void TemplateLibrary::printLibrary() {
 		throw "Library is empty";
 	}
 	else {
-		map<string, vector<TemplateImage>>::const_iterator elm;
+		map<int, vector<TemplateImage>>::const_iterator elm;
 		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
-			string key = elm->first;
+			int key = elm->first;
 
 			std::cout << "Key: " << elm->first << endl;
 			vector<TemplateImage> val = this->library.at(key);
