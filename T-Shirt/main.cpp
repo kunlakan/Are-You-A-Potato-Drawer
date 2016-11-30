@@ -14,10 +14,15 @@
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
+#include "DrawingRecognition.h"
 #include "TemplateLibrary.h" 
 
 int main(int argc, char* argv[]){
 	Mat input = imread("template_images/square.jpg");
+
+	imshow("D", input);
+	waitKey();
+	//DrawingRecognition dr(input);
 
 	/*
 	TemplateImage square("template_images/square.jpg", 4);

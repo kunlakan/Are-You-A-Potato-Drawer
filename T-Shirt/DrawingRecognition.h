@@ -32,7 +32,7 @@ public:
 	// Postcondition:	- searchIMG is set to input, and strokes is set to userNOS.
 	//					- edgeIMG stores an edge image of searchIMG
 	//------------------------------------------------------------------------------
-	DrawingRecognition(const Mat &input, const int &userNOS);
+	DrawingRecognition(const Mat &input);
 
 	//--------------------------------- Destructor ---------------------------------
 	// Destructor for class DrawingRecognition
