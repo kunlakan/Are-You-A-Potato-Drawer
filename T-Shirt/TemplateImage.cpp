@@ -2,25 +2,53 @@
 // TemplateImage.cpp
 // Created by Kulsoom Mansoor
 // Created on 11/23/2016
+// IMPORTANT NOTE!!!!!
+//	-images filenames should be in this format: shape_contours_id.jpg
+//	-the id is optional, so without the id it would look like: shape_contours.jpg
 //------------------------------------------------------------------------------
 #include "TemplateImage.h"
 
-TemplateImage::TemplateImage(string filename, int corners) {
+TemplateImage::TemplateImage() {
+	this->image = NULL;
+	this->imageName = "";
+	this->shape = "";
+	this->numOfContours = 0;
+}
+
+TemplateImage::TemplateImage(string filename) {
 	this->image = imread(filename, IMREAD_GRAYSCALE);
 
+	vector<string> parsed = this->parseFilename(filename);
 	this->imageName = filename;
-	setNumOfCorners(corners);
+	setNumOfContours(stoi(parsed[1]));
+	this->shape = parsed[0];
 }
 
-int TemplateImage::getNumOfCorners() const{
-	return this->numOfCorners;
+vector<string> TemplateImage::parseFilename(const string str) const{
+	string fn = str;
+
+	while (fn.find("/") != string::npos) {
+		fn = fn.substr(fn.find("/") + 1);
+	}
+	vector<string> strings;
+	istringstream f(fn);
+	string s;
+	while (getline(f, s, '_')) {
+		strings.push_back(s);
+	}
+
+	return strings;
 }
-void TemplateImage::setNumOfCorners(int newCorners) {
-	if (newCorners <= 0) {
-		this->numOfCorners = 1;
+
+int TemplateImage::getNumOfContours() const{
+	return this->numOfContours;
+}
+void TemplateImage::setNumOfContours(const int newContours) {
+	if (newContours <= 0) {
+		this->numOfContours = 1;
 	}
 	else {
-		this->numOfCorners = newCorners;
+		this->numOfContours = newContours;
 	}
 }
 
@@ -41,4 +69,12 @@ void TemplateImage::setImageName(const string newName){
 void TemplateImage::setImageAndImageName(const Mat &newImage, const string newName) {
 	this->imageName = newName;
 	this->image = newImage;
+}
+
+string TemplateImage::getShape() const {
+	return this->shape;
+}
+
+void TemplateImage::setShape(const string shape) {
+	this->shape = shape;
 }

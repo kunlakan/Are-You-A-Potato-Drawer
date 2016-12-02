@@ -15,52 +15,49 @@
 using namespace cv;
 
 #include "DrawingRecognition.h"
-#include "TemplateLibrary.h" 
+#include "TemplateLibrary.h"  
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
 	Mat input = imread("template_images/square.jpg");
 
 	imshow("D", input);
 	waitKey();
 	//DrawingRecognition dr(input);
-
+	
 	/*
-	TemplateImage square("template_images/square.jpg", 4);
-	TemplateImage rect("template_images/rectangle.jpg", 4);
-	TemplateImage triangle("template_images/triangle.jpg", 3);
-	TemplateImage hexagon("template_images/hexagon.jpg", 6);
-	TemplateImage hexagon2("template_images/hexagon_2.jpg", 6);
-
 	TemplateLibrary library;
-	library.addTemplateImage(square);
-	library.addTemplateImage(rect);
-	library.addTemplateImage(triangle);
-	library.addTemplateImage(hexagon);
-	library.addTemplateImage(hexagon2);
-
+	library.createLibrary();
+	vector<string> shapes = library.getAllShapes();
 	
-	TemplateImage get = library.getTemplateImage(6, "template_images/hexagon.jpg");
 	
-	vector<TemplateImage> getList = library.getTemplateImageList(6);
+	TemplateImage get = library.getTemplateImage(6, "template_images/hexagon_6.jpg");
+	
+	vector<TemplateImage> getList = library.getTemplateImageList(4);
 
 	vector<int> allKeys = library.getAllKeys();
 
 	vector<TemplateImage> allImages = library.getAllTemplateImages();
 
-	int key = library.getMinMaxKey("template_images/triangle.jpg");
+	int key = library.getContoursKey("template_images/triangle_3.jpg");
 
-	
 	//std::cout << "Before" << endl;
 	//library.printLibrary();
 	//std::cout << "" << endl;
 	//std::cout << "After" << endl;
 
-	//TemplateImage del = library.removeTemplateImage(4, "template_images/rectangle.jpg");
+	//bool del = library.removeTemplateImage(5, "template_images/rectangle_4.jpg");
+	//if (del) {
+	//	cout << "deleted" << endl;
+	//}
+	//else {
+	//	cout << "NOT deleted" << endl;
+	//}
 	
-	//vector<TemplateImage> delList = library.removeTemplateImageList(6);
+	//bool delList = library.removeTemplateImageList(6);
 
 	//library.emptyLibrary();
-
+	//shapes = library.getAllShapes();
+	
 	for (int i = 0; i < 500; i++) {
 
 		//std::cout << key << endl;
@@ -68,10 +65,10 @@ int main(int argc, char* argv[]){
 		//for (int j = 0; j < allKeys.size(); j++) {
 			//std::cout << allKeys[j] << endl;
 		//}
-
+		//std::cout << "" << endl;
 		
 		//for (int j = 0; j < allImages.size(); j++) {
-		//	std::cout << allImages[j].getImageName() << endl;
+			//std::cout << allImages[j].getImageName() << endl;
 		//}
 		//std::cout << "" << endl;
 		
@@ -89,6 +86,11 @@ int main(int argc, char* argv[]){
 			//std::cout << getList[j].getImageName() << endl;
 		//}
 		//std::cout << "" << endl; 
+
+		//for (int j = 0; j < shapes.size(); j++) {
+			//std::cout << shapes[j] << endl;
+		//}
+		//std::cout << "" << endl;
 
 		library.printLibrary();
 		std::cout << "" << endl; 

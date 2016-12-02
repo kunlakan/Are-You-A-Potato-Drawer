@@ -2,6 +2,9 @@
 // TemplateImage.h
 // Created by Kulsoom Mansoor
 // Created on 11/23/2016
+// IMPORTANT NOTE!!!!!
+//	-images filenames should be in this format: shape_contours_id.jpg
+//	-the id is optional, so without the id it would look like: shape_contours.jpg
 //------------------------------------------------------------------------------
 #pragma once
 
@@ -19,11 +22,11 @@ using namespace std;
 class TemplateImage {
 
 public:
+	TemplateImage();
+	TemplateImage(string);
 
-	TemplateImage(string, int);
-
-	int getNumOfCorners() const;
-	void setNumOfCorners(int);
+	int getNumOfContours() const;
+	void setNumOfContours(const int);
 
 	Mat getImage() const;
 	void setImage(const Mat &newImage);
@@ -32,10 +35,16 @@ public:
 	void setImageName(const string newName);
 	void setImageAndImageName(const Mat &newImage, const string newName);
 
+	string getShape() const;
+	void setShape(const string);
+
 private:
-	int numOfCorners = 1;
+	int numOfContours = 1;
 	Mat image;
 	string imageName;
+	string shape = "";
+
+	vector<string> parseFilename(const string) const;
 };
 
 #endif /* defined(__TemplateImage__) */
