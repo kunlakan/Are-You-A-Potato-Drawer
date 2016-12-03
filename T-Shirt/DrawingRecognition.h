@@ -10,7 +10,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "TemplateImage.h"
+#include "TemplateLibrary.h"
+#include "opencv2/shape.hpp"
 
 using namespace std;
 using namespace cv;
@@ -25,14 +26,20 @@ public:
 	//------------------------------------------------------------------------------
 	DrawingRecognition();
 
-	//------------------------- Two Parameter Constructor --------------------------
+	//------------------------- One Parameter Constructor --------------------------
 	// A two parameters constructor for class DrawingRecognition.
 	// Precondition:	- input must be created and not NULL.
-	//					- userNOS (NOS: number of strokes) must be >= 0. 
-	// Postcondition:	- searchIMG is set to input, and strokes is set to userNOS.
-	//					- edgeIMG stores an edge image of searchIMG
+	// Postcondition:	- searchIMG is set to input.
 	//------------------------------------------------------------------------------
 	DrawingRecognition(const Mat &input);
+
+	//------------------------- One Parameter Constructor --------------------------
+	// A two parameters constructor for class DrawingRecognition.
+	// Precondition:	- inputFile must be the path of the input file that exist
+	//					  in the same directory as the program.
+	// Postcondition:	- searchIMG is set to an image that has inputFile name.
+	//------------------------------------------------------------------------------
+	DrawingRecognition(const string &inputName);
 
 	//--------------------------------- Destructor ---------------------------------
 	// Destructor for class DrawingRecognition
@@ -46,13 +53,12 @@ public:
 	//Mat getTemplate(int strokes);
 
 private:
-	static const int MAX_TRY_PER_TEMPLATE = 20;
+	//static const int MAX_TRY_PER_TEMPLATE = 20;
 
 	Mat searchIMG;
-	Mat edgeIMG;
-	int strokes;
+	TemplateLibrary libraryTMPL;
+	
 
-	vector<TemplateImage> templateList;
 
 
 	//---------------------------- PRIVATE: detectEdge -----------------------------
@@ -62,6 +68,12 @@ private:
 	// Postconditions:	output is an edge image of the input.
 	//------------------------------------------------------------------------------
 	void detectEdge(const Mat &input, Mat &output);
+
+	void matchTMPL(const Mat &search, const Mat &tmpl);
+
+	vector<vector<Point>> getContour(const Mat &input);
+
+	Size getConers(vector<vector<Point>> contours);
 
 	//----------------------------- PRIVATE: rotate90 ------------------------------
 	// Rotate input image by 90 degree.
