@@ -49,18 +49,21 @@ public:
 	~DrawingRecognition();
 
 
-	void findBestMatch();
-	//Mat getTemplate(int strokes);
+	string findBestMatch();
+
+	//-------------------------------- getAllShapes --------------------------------
+	// Get a list of all shapes name available in the template library.
+	// Preconditions:	libraryTMPL must be created before calling this function.
+	// Postconditions:	return a list of all shapes name in the template library.
+	//------------------------------------------------------------------------------
+	vector<string> getAllShapes();
 
 private:
-	//static const int MAX_TRY_PER_TEMPLATE = 20;
+	const float RESIZE_PERCENTAGE = 0.8;
 
 	Mat searchIMG;
 	TemplateLibrary libraryTMPL;
 	
-
-
-
 	//---------------------------- PRIVATE: detectEdge -----------------------------
 	// Detects edge of the input image.
 	// Preconditions:	- input must be a gray-level image.
@@ -69,11 +72,7 @@ private:
 	//------------------------------------------------------------------------------
 	void detectEdge(const Mat &input, Mat &output);
 
-	void matchTMPL(const Mat &search, const Mat &tmpl);
-
-	vector<vector<Point>> getContour(const Mat &input);
-
-	Size getConers(vector<vector<Point>> contours);
+	int getContour(const Mat &input, vector<Point> &output);
 
 	//----------------------------- PRIVATE: rotate90 ------------------------------
 	// Rotate input image by 90 degree.

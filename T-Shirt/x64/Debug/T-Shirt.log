@@ -1,3 +1,10 @@
-﻿  main.cpp
-  T-Shirt.vcxproj -> C:\Users\kulso\OneDrive\Documents\GitHub\T-Shirt\x64\Debug\T-Shirt.exe
-  T-Shirt.vcxproj -> C:\Users\kulso\OneDrive\Documents\GitHub\T-Shirt\x64\Debug\T-Shirt.pdb (Partial PDB)
+﻿  DrawingRecognition.cpp
+d:\github\t-shirt\t-shirt\drawingrecognition.h(62): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\t-shirt\t-shirt\drawingrecognition.cpp(88): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+  Compiling...
+  main.cpp
+d:\github\t-shirt\t-shirt\drawingrecognition.h(62): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  Generating Code...
+  T-Shirt.vcxproj -> D:\GitHub\T-Shirt\x64\Debug\T-Shirt.exe
+  T-Shirt.vcxproj -> D:\GitHub\T-Shirt\x64\Debug\T-Shirt.pdb (Partial PDB)

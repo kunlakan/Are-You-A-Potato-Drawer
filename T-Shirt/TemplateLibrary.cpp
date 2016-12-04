@@ -228,8 +228,7 @@ vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int corners) c
 		return this->library.at(key);
 	}
 	else {
-		vector<TemplateImage> empty;
-		return empty; 
+		return this->getAllTemplateImages();
 	}
 }
 

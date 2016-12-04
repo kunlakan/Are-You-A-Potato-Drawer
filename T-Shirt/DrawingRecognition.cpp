@@ -55,107 +55,102 @@ DrawingRecognition::~DrawingRecognition() {}
 // Precondition:	None
 // Postcondition:	None
 //------------------------------------------------------------------------------
-void DrawingRecognition::findBestMatch()
+string DrawingRecognition::findBestMatch()
 {
-	Ptr<HausdorffDistanceExtractor> hd = createHausdorffDistanceExtractor();
+	double bestMatchDistance = FLT_MAX;
+	//Ptr<HausdorffDistanceExtractor> hd = createHausdorffDistanceExtractor();
+	//hd->setRankProportion(0.6);
 
-	float bestMatchDistance = FLT_MAX;
+	Mat inputIMG(searchIMG);
 	TemplateImage bestMatchTMPL;
+	vector<Point> contours;
 
-	imshow("D", searchIMG);
 	// Get contours of the searchIMG
-	//vector<vector<Point>> contours = getContour(searchIMG);
+	int numContours = getContour(inputIMG, contours);
+	//cout << numContours << endl;
 
-	//// Get list of all templates that have the same number of contours
-	//vector<TemplateImage> listTMPL = libraryTMPL.getTemplateImageList(contours.size());
+	// Get list of all templates that have the same number of contours
+	vector<TemplateImage> listTMPL = libraryTMPL.getTemplateImageList(numContours);
+	
+	if (listTMPL.size() == 1)
+		return listTMPL[0].getShape();
 
-	//// Find best match using Hausdorff distance
-	//float distance = 0;
-	//for (int i = 0; i < listTMPL.size(); i++)
-	//{
-	//	vector<vector<Point>> TMPLcontours = getContour(listTMPL[i].getImage());
-	//	distance = hd->computeDistance(contours, TMPLcontours);
+	// Find best match
+	float distance = 0;
+	vector<Point> TMPLcontours;
+	for (int i = 0; i < listTMPL.size(); i++)
+	{		
+		getContour(listTMPL[i].getImage(), TMPLcontours);
 
-	//	if (distance < bestMatchDistance)
-	//	{
-	//		bestMatchDistance = distance;
-	//		bestMatchTMPL = listTMPL[i];
-	//	}
-	//}
+		while (inputIMG.rows >= listTMPL[i].getImage().rows || inputIMG.cols >= listTMPL[i].getImage().cols)
+		{
+			//distance = hd->computeDistance(contours, TMPLcontours);
+			distance = matchShapes(contours, TMPLcontours, 1, 0.0);
 
-	delete(hd);
+			if (distance < bestMatchDistance)
+			{
+				if (distance == 0)
+					return listTMPL[i].getShape();
+
+				bestMatchDistance = distance;
+				bestMatchTMPL = listTMPL[i];
+			}
+
+			resize(inputIMG, inputIMG, Size(), RESIZE_PERCENTAGE, RESIZE_PERCENTAGE, INTER_AREA);
+			getContour(inputIMG, contours);
+
+			//cout << distance << endl;
+			//cout << listTMPL[i].getShape() << endl;
+		}
+
+		searchIMG.copyTo(inputIMG);
+		getContour(inputIMG, contours);
+	}
+
+	//cout << "distance " << bestMatchDistance << endl;
+	//cout << bestMatchTMPL.getShape() << endl;
+	//cin.get();
+
+	return bestMatchTMPL.getShape();
 }
 
 
-vector<vector<Point>> DrawingRecognition::getContour(const Mat &input)
+int DrawingRecognition::getContour(const Mat &input, vector<Point> &output)
 {
 	Mat edge;
-	vector<vector<Point>> contours;
-	//vector<Point> allContours;
-
 	detectEdge(input, edge);
-	findContours(edge, contours, RETR_LIST, CHAIN_APPROX_NONE);
-	// RETR_LIST gives all the contours and doesn't even bother calculating the
-	// hierarchy -- good if you only want the contours and don't care whether
-	// one is nested inside another.
 
-	/*for (int i = 0; i < contours.size(); i++)
-	{
-		for (int j = 0; j < contours[i].size(); j++)
-		{
-			allContours.push_back(contours[i][j]);
-		}
-	}*/
+	//imshow("edge", edge);
+
+	vector<vector<Point>> contours;
+	findContours(edge, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+	// RETR_EXTERNAL gives "outer" contours, so if you have one contour
+	// enclosing another (like concentric circles), only the outermost is given.
+
+	for (int i = 0; i < contours.size(); i++)
+		output.insert(output.end(), contours[i].begin(), contours[i].end());
+
+	Mat approx;
+	approxPolyDP(Mat(output), approx, arcLength(Mat(contours[0]), true)*0.02, true);
 
 	//Drawing Contours
-	//vector<Vec4i> hierarchy;
-	//RNG rng(12345);
+	/*vector<Vec4i> hierarchy;
+	RNG rng(12345);
 
-	//Mat drawing = Mat::zeros(searchIMG.size(), CV_8UC3);
-	//for (int i = 0; i< contours.size(); i++)
-	//{
-	//Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
-	//drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
-	//}
+	Mat drawing = Mat::zeros(searchIMG.size(), CV_8UC3);
+	for (int i = 0; i< contours.size(); i++)
+	{
+	Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
+	drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point());
+	}
 
-	/*	imshow("d", drawing);
-	waitKey()*/;
-
-	return contours;
-}
-
-//Size DrawingRecognition::getConers(vector<vector<Point>> contours)
-//{
-//	Mat polygon;
-//	approxPolyDP(Mat(contours[0]), polygon, arcLength(Mat(contours[0]), true)*0.02, true);
-//
-//	imshow("polygon", polygon);
-//	waitKey();
-//	//cout << polygon.size() << endl;
-//
-//	//cin.get();
-//	// return height x width
-//	return polygon.size();
-//}
-
-void DrawingRecognition::matchTMPL(const Mat &search, const Mat &tmpl)
-{
-	double minVal;
-	double maxVal;
-	Point minLoc;
-	Point maxLoc;
-
-	Mat match;
-	Mat display(search);
-
-	matchTemplate(search, tmpl, match, TM_CCOEFF);
-	minMaxLoc(match, &minVal, &maxVal, &minLoc, &maxLoc, Mat());
-	cout << "maxVal: " << maxVal << " minVal: " << minVal << endl;
-
-	rectangle(display, maxLoc, Point(maxLoc.x + tmpl.cols, maxLoc.y + tmpl.rows), Scalar::all(0), 2, 8, 0);
-
-	imshow("1", display);
+	imshow("d", drawing);
 	waitKey();
+
+	cout << contours.size() << endl;
+	cout << approx.size() << endl;
+	cin.get();*/
+	return approx.size().height;
 }
 
 
@@ -167,6 +162,25 @@ void DrawingRecognition::matchTMPL(const Mat &search, const Mat &tmpl)
 //------------------------------------------------------------------------------
 void DrawingRecognition::detectEdge(const Mat &input, Mat &output)
 {
+	// Threshold.
+	// Set values equal to or above 220 to 0.
+	// Set values below 220 to 255.
+	//Mat im_th;
+	//threshold(input, im_th, 220, 255, THRESH_BINARY_INV);
+
+	//// Floodfill from point (0, 0)
+	//Mat im_floodfill = im_th.clone();
+	//floodFill(im_floodfill, cv::Point(0, 0), Scalar(255));
+
+	//// Invert floodfilled image
+	//Mat im_floodfill_inv;
+	//bitwise_not(im_floodfill, im_floodfill_inv);
+
+	//// Combine the two images to get the foreground.
+	//output = (im_th | im_floodfill_inv);
+
+	//bitwise_not(output, output);
+
 	double sigmaX = 2.0;
 	double sigmaY = 2.0;
 
@@ -184,23 +198,18 @@ void DrawingRecognition::detectEdge(const Mat &input, Mat &output)
 // Preconditions:	None.
 // Postconditions:	output is an edge image of the input.
 //------------------------------------------------------------------------------
-void DrawingRecognition::rotate90(Mat &input) {
+void DrawingRecognition::rotate90(Mat &input)
+{
 	transpose(input, input);
 	flip(input, input, 0);
 }
 
+//-------------------------------- getAllShapes --------------------------------
+// Get a list of all shapes name available in the template library.
+// Preconditions:	libraryTMPL must be created before calling this function.
+// Postconditions:	return a list of all shapes name in the template library.
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-/*float ObjectRecognition::hausdorffDistance(const vector<Point> &a, const vector<Point> &b)
+vector<string> DrawingRecognition::getAllShapes() 
 {
-//findContours of inputs and template image.
-
-HausdorffDistanceExtractor* hd = createHausdorffDistanceExtractor();
-
-float distanceAB = hd->computeDistance(a, b);
-float distanceBA = hd->computeDistance(b, a);
-
-delete(hd);
-
-return max(distanceAB, distanceBA);
-}*/
+	return libraryTMPL.getAllShapes();
+}

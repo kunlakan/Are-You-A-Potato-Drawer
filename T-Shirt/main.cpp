@@ -18,10 +18,9 @@ using namespace cv;
 #include "TemplateLibrary.h"  
 
 int main(int argc, char* argv[]) {
-	Mat input = imread("template_images/square.jpg");
+	DrawingRecognition dr("input.jpg");
+	dr.findBestMatch();
 
-	imshow("D", input);
-	waitKey();
 	//DrawingRecognition dr(input);
 	
 	/*
