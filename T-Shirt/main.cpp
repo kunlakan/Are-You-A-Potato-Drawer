@@ -14,11 +14,21 @@
 #include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 
+#include <stdlib.h>
+#include <ctime>
+
 #include "DrawingRecognition.h"
 #include "TemplateLibrary.h"  
 
+const int ESC = 27;
+const int ENTER = 13;
+const int BACKSPACE = 8;
+const int R_KEY = 114;
+const string canvasName = "Draw window";
 
-bool buttonDown;
+string matchedShape;
+string theShape;
+bool buttonDown, started, firstClicked;
 Point prevPoint;
 
 static void onMouse(int event, int x, int y, int, void* imgptr) {
@@ -28,6 +38,16 @@ static void onMouse(int event, int x, int y, int, void* imgptr) {
 		{
 			buttonDown = true;
 		}
+
+		if (started && !firstClicked)
+		{
+			//clear canvas using empty image
+			firstClicked = true;
+			Mat & img = *((Mat*)imgptr);
+			img = imread("canvas.jpg");
+			imshow(canvasName, img);
+		}
+
 	}
 	else if (event == EVENT_LBUTTONUP)
 	{
@@ -41,7 +61,7 @@ static void onMouse(int event, int x, int y, int, void* imgptr) {
 
 		//circle(img, pt1, 1, Scalar(0, 0, 0), 100, 8, 0);
 		line(img, prevPoint, Point(x, y), Scalar(0, 0, 0), 5, 8, 0);
-		imshow("Display window", img);
+		imshow(canvasName, img);
 		waitKey(1);
 	}
 
@@ -53,46 +73,131 @@ static void onMouse(int event, int x, int y, int, void* imgptr) {
 
 }
 
+int getRandomNumber(int max)
+{
+	srand(time(0));
+	int randomNum = rand() % max;
+	return randomNum;
+}
+
+string drawRandomShape()
+{
+	DrawingRecognition dummyDr = DrawingRecognition("canvas.jpg");
+	vector<string> availableShapes = dummyDr.getAllShapes();
+
+	int shapeIndex = getRandomNumber(availableShapes.size() - 1);
+	theShape = availableShapes.at(shapeIndex);
+
+	return theShape;
+}
+
+void init()
+{
+	matchedShape = "potato";
+	started = false;
+	buttonDown = false;
+	firstClicked = false;
+	prevPoint = Point(0, 0);
+	drawRandomShape();
+}
+
+void runApp()
+{
+	
+	Mat initImg = imread("canvas.jpg");
+	Mat img = initImg.clone();
+	Mat instructionImg = imread("instructions.jpeg");
+
+	namedWindow(canvasName);
+	imshow(canvasName, instructionImg);
+
+
+
+	//************************** EVENT HANDLING *********************************************
+	int key = waitKey(1);
+	while (key != ESC) {
+
+		if (started)
+		{
+			setMouseCallback(canvasName, onMouse, &img); // pass ptr to mat here
+			imshow(canvasName, img);
+		}
+
+		key = waitKey(1);
+
+		if (key == ENTER)
+		{
+			if (started)
+			{
+				imwrite("output.jpg", img);
+				DrawingRecognition dr("output.jpg");
+
+				string result = dr.findBestMatch();
+				string out = "";
+				if (result == theShape)
+				{
+					matchedShape = result;
+					out = "Nice " + matchedShape + " drawing";
+				}
+				else
+				{
+					out = "Sorry, it looks like a potato";
+				}
+
+				rectangle(img, Point(10, 10), Point(590, 70), cvScalar(0, 0, 0), -1, 8, 0);
+				putText(img, out, cvPoint(10, 60),
+					FONT_HERSHEY_COMPLEX, 1, cvScalar(250, 250, 250), 1, CV_AA);
+			}
+			else
+			{
+				if (!firstClicked) {
+					string toDrawEcho = "Draw a " + theShape + ".";
+					putText(img, toDrawEcho, cvPoint(100, 300),
+						FONT_HERSHEY_COMPLEX, 1, cvScalar(0, 0, 0), 1, CV_AA);
+				}
+
+				started = true;
+				imshow(canvasName, initImg);
+			}
+
+		}
+
+		else if (key == BACKSPACE)
+		{
+			if (started && firstClicked)
+			{
+				img = initImg.clone();
+				imshow(canvasName, img);
+			}
+		}
+
+		else if (key == R_KEY)
+		{
+			img = initImg.clone();
+			imshow(canvasName, img);
+			init();
+
+			string toDrawEcho = "Draw a " + theShape + ".";
+			putText(img, toDrawEcho, cvPoint(100, 300),
+				FONT_HERSHEY_COMPLEX, 1, cvScalar(0, 0, 0), 1, CV_AA);
+
+			started = true;
+		}
+	}
+}
 
 
 int main(int argc, char* argv[]) {
-	//DrawingRecognition dr("input.jpg");
-	//dr.findBestMatch();
-
-	buttonDown = false;
-	prevPoint = Point(-1, -1);
-	Mat initImg = imread("canvas.jpg");
-	Mat img = initImg;
-
-	//createButton("button3", callbackButton, &img);
-
-
-	namedWindow("Display window");
-
-	while (waitKey(1) != 27) {
-
-		setMouseCallback("Display window", onMouse, &img); // pass ptr to mat here
-		imshow("Display window", img);
-
-		if (waitKey(1) == 13)
-		{
-			imwrite("output.jpg", img);
-			DrawingRecognition dr("output.jpg");
-			//cout << dr.findBestMatch();
-
-			string out = "that's a " + dr.findBestMatch();
-
-			putText(img, out, cvPoint(30, 30),
-				FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200, 200, 250), 1, CV_AA);
-			
-
-			
-		}
-	}
+	
+	
+	init();
+	
+	runApp();
+	
 
 	
 
-	imwrite("output.jpg", img);
+	//imwrite("output.jpg", img);
 
 	//DrawingRecognition dr(input);
 	
