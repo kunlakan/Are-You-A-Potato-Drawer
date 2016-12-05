@@ -1,10 +1,18 @@
-﻿  DrawingRecognition.cpp
-d:\github\t-shirt\t-shirt\drawingrecognition.h(62): warning C4305: 'initializing': truncation from 'double' to 'const float'
-d:\github\t-shirt\t-shirt\drawingrecognition.cpp(88): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-  Compiling...
-  main.cpp
-d:\github\t-shirt\t-shirt\drawingrecognition.h(62): warning C4305: 'initializing': truncation from 'double' to 'const float'
-  Generating Code...
-  T-Shirt.vcxproj -> D:\GitHub\T-Shirt\x64\Debug\T-Shirt.exe
-  T-Shirt.vcxproj -> D:\GitHub\T-Shirt\x64\Debug\T-Shirt.pdb (Partial PDB)
+﻿Build started 12/4/2016 7:28:09 PM.
+     1>Project "C:\Users\Jessica\Desktop\T-Shirt\T-Shirt\T-Shirt.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /IC:\opencv\build\include /ZI /nologo /W3 /WX- /sdl /Od /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt DrawingRecognition.cpp
+         DrawingRecognition.cpp
+     1>c:\users\jessica\desktop\t-shirt\t-shirt\drawingrecognition.h(62): warning C4305: 'initializing': truncation from 'double' to 'const float'
+     1>c:\users\jessica\desktop\t-shirt\t-shirt\drawingrecognition.cpp(88): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jessica\Desktop\T-Shirt\x64\Debug\T-Shirt.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\opencv\build\x64\vc14\lib opencv_world310d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG:FASTLINK /PDB:"C:\Users\Jessica\Desktop\T-Shirt\x64\Debug\T-Shirt.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jessica\Desktop\T-Shirt\x64\Debug\T-Shirt.lib" /MACHINE:X64 x64\Debug\DrawingRecognition.obj
+         x64\Debug\main.obj
+         x64\Debug\TemplateImage.obj
+         x64\Debug\TemplateLibrary.obj
+         T-Shirt.vcxproj -> C:\Users\Jessica\Desktop\T-Shirt\x64\Debug\T-Shirt.exe
+     1>Done Building Project "C:\Users\Jessica\Desktop\T-Shirt\T-Shirt\T-Shirt.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.99

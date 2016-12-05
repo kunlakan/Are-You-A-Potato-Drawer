@@ -17,9 +17,82 @@ using namespace cv;
 #include "DrawingRecognition.h"
 #include "TemplateLibrary.h"  
 
+
+bool buttonDown;
+Point prevPoint;
+
+static void onMouse(int event, int x, int y, int, void* imgptr) {
+	if (event == EVENT_LBUTTONDOWN)
+	{
+		if (!buttonDown)
+		{
+			buttonDown = true;
+		}
+	}
+	else if (event == EVENT_LBUTTONUP)
+	{
+		buttonDown = false;
+	}
+
+
+	if (buttonDown && event == EVENT_MOUSEMOVE) {
+		Mat & img = *((Mat*)imgptr); // first cast, then deref
+		Point pt1 = Point(x, y);
+
+		//circle(img, pt1, 1, Scalar(0, 0, 0), 100, 8, 0);
+		line(img, prevPoint, Point(x, y), Scalar(0, 0, 0), 5, 8, 0);
+		imshow("Display window", img);
+		waitKey(1);
+	}
+
+	if (event == EVENT_MOUSEMOVE)
+	{
+		prevPoint.x = x;
+		prevPoint.y = y;
+	}
+
+}
+
+
+
 int main(int argc, char* argv[]) {
-	DrawingRecognition dr("input.jpg");
-	dr.findBestMatch();
+	//DrawingRecognition dr("input.jpg");
+	//dr.findBestMatch();
+
+	buttonDown = false;
+	prevPoint = Point(-1, -1);
+	Mat initImg = imread("canvas.jpg");
+	Mat img = initImg;
+
+	//createButton("button3", callbackButton, &img);
+
+
+	namedWindow("Display window");
+
+	while (waitKey(1) != 27) {
+
+		setMouseCallback("Display window", onMouse, &img); // pass ptr to mat here
+		imshow("Display window", img);
+
+		if (waitKey(1) == 13)
+		{
+			imwrite("output.jpg", img);
+			DrawingRecognition dr("output.jpg");
+			//cout << dr.findBestMatch();
+
+			string out = "that's a " + dr.findBestMatch();
+
+			putText(img, out, cvPoint(30, 30),
+				FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(200, 200, 250), 1, CV_AA);
+			
+
+			
+		}
+	}
+
+	
+
+	imwrite("output.jpg", img);
 
 	//DrawingRecognition dr(input);
 	

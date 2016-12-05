@@ -67,7 +67,7 @@ string DrawingRecognition::findBestMatch()
 
 	// Get contours of the searchIMG
 	int numContours = getContour(inputIMG, contours);
-	//cout << numContours << endl;
+	cout << numContours << endl;
 
 	// Get list of all templates that have the same number of contours
 	vector<TemplateImage> listTMPL = libraryTMPL.getTemplateImageList(numContours);
