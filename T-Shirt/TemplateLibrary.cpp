@@ -105,7 +105,7 @@ If the key formed by the first argument exists and the image name also
 exists, then that template image will be deleted from the map. This method
 returns true. 
 */
-bool TemplateLibrary::removeTemplateImage(const int corners, const string imageName) {
+bool TemplateLibrary::removeTemplateImage(const int &corners, const string &imageName) {
 	int key = corners;
 
 	if (this->library.empty()) {
@@ -141,7 +141,7 @@ Post-condition:
 If the map has an TemplateImage with the name same as the argument passed in,
 then they key of that TemplateImage is passed in.
 */
-int TemplateLibrary::getContoursKey(const string imageName) const {
+int TemplateLibrary::getContoursKey(const string &imageName) const {
 
 	if (this->library.empty()) {
 		return -1;
@@ -178,7 +178,7 @@ Post-condition:
 If the key formed by the first argument exist and if the name of the 
 TemplateImage exists, then the corresponding TemplateImage is returned.
 */
-TemplateImage TemplateLibrary::getTemplateImage(int corners, string imageName) const {
+TemplateImage TemplateLibrary::getTemplateImage(const int &corners, const string &imageName) const {
 	int key = corners;
 
 	if (this->library.empty()) {
@@ -217,7 +217,7 @@ Post-condition:
 If the key formed by the argument passed in exists, then a vector containing all
 the TemplateImage objects will be returned.
 */
-vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int corners) const {
+vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int &corners) const {
 	int key = corners;
 
 	if (this->library.empty()) {
@@ -309,7 +309,7 @@ If the the key formed using the argument passed in exists in the map, then
 value of that key is deleted from the map. This value is a vector containing
 all the TemplateImages of that key. This method returns the deleted vector.
 */
-bool TemplateLibrary::removeTemplateImageList(const int corners) {
+bool TemplateLibrary::removeTemplateImageList(const int &corners) {
 	if (this->library.empty()) {
 		return false;
 	}

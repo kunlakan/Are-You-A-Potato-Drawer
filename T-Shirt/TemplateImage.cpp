@@ -15,7 +15,7 @@ TemplateImage::TemplateImage() {
 	this->numOfContours = 0;
 }
 
-TemplateImage::TemplateImage(string filename) {
+TemplateImage::TemplateImage(const string& filename) {
 	this->image = imread(filename, IMREAD_GRAYSCALE);
 
 	vector<string> parsed = this->parseFilename(filename);
@@ -24,7 +24,7 @@ TemplateImage::TemplateImage(string filename) {
 	this->shape = parsed[0];
 }
 
-vector<string> TemplateImage::parseFilename(const string str) const{
+vector<string> TemplateImage::parseFilename(const string &str) const{
 	string fn = str;
 
 	while (fn.find("/") != string::npos) {
@@ -43,7 +43,7 @@ vector<string> TemplateImage::parseFilename(const string str) const{
 int TemplateImage::getNumOfContours() const{
 	return this->numOfContours;
 }
-void TemplateImage::setNumOfContours(const int newContours) {
+void TemplateImage::setNumOfContours(const int &newContours) {
 	if (newContours <= 0) {
 		this->numOfContours = 1;
 	}
@@ -62,11 +62,11 @@ void TemplateImage::setImage(const Mat &newImage) {
 string TemplateImage::getImageName() const {
 	return this->imageName;
 }
-void TemplateImage::setImageName(const string newName){
+void TemplateImage::setImageName(const string &newName){
 	this->imageName = newName;
 }
 
-void TemplateImage::setImageAndImageName(const Mat &newImage, const string newName) {
+void TemplateImage::setImageAndImageName(const Mat &newImage, const string &newName) {
 	this->imageName = newName;
 	this->image = newImage;
 }
@@ -75,6 +75,6 @@ string TemplateImage::getShape() const {
 	return this->shape;
 }
 
-void TemplateImage::setShape(const string shape) {
+void TemplateImage::setShape(const string &shape) {
 	this->shape = shape;
 }

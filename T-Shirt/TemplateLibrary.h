@@ -37,16 +37,16 @@ public:
 
 	void addTemplateImage(const TemplateImage&);
 
-	bool removeTemplateImage(const int, const string imageName); 
+	bool removeTemplateImage(const int&, const string &imageName); 
 
-	int getContoursKey(const string) const; 
-	TemplateImage getTemplateImage(const int, const string imageName) const; 
-	vector<TemplateImage> getTemplateImageList(const int) const; 
+	int getContoursKey(const string&) const; 
+	TemplateImage getTemplateImage(const int &corners, const string &imageName) const;
+	vector<TemplateImage> getTemplateImageList(const int&) const; 
 
 	vector<int> getAllKeys() const; 
 	vector<TemplateImage> getAllTemplateImages() const; 
 
-	bool removeTemplateImageList(const int); 
+	bool removeTemplateImageList(const int&); 
 
 	bool emptyLibrary(); 
 

@@ -23,20 +23,20 @@ class TemplateImage {
 
 public:
 	TemplateImage();
-	TemplateImage(string);
+	TemplateImage(const string&);
 
 	int getNumOfContours() const;
-	void setNumOfContours(const int);
+	void setNumOfContours(const int&);
 
 	Mat getImage() const;
 	void setImage(const Mat &newImage);
 
 	string getImageName() const;
-	void setImageName(const string newName);
-	void setImageAndImageName(const Mat &newImage, const string newName);
+	void setImageName(const string &newName);
+	void setImageAndImageName(const Mat &newImage, const string &newName);
 
 	string getShape() const;
-	void setShape(const string);
+	void setShape(const string&);
 
 private:
 	int numOfContours = 1;
@@ -44,7 +44,7 @@ private:
 	string imageName;
 	string shape = "";
 
-	vector<string> parseFilename(const string) const;
+	vector<string> parseFilename(const string&) const;
 };
 
 #endif /* defined(__TemplateImage__) */
