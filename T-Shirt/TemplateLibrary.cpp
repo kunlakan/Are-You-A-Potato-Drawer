@@ -33,7 +33,8 @@ If the pre-conditions are not satisfied, then this method will not work. If the
 pre-conditions are satisfied, then this method will create the library using
 the template images found in the specified folder.
 */
-void TemplateLibrary::createLibrary() {
+void TemplateLibrary::createLibrary() 
+{
 	vector<cv::String> filenames; //will store the filenames
 	glob(this->templateImageFolderPath, filenames, false); //will get the filenames
 
@@ -44,7 +45,8 @@ void TemplateLibrary::createLibrary() {
 	//The glob method will return the filename like this: folder1/folder2\filename.jpg
 	//So I am changing the the backslash into a forward slash to make it a proper
 	//file path name
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count; i++) 
+	{
 		s = filenames[i].substr(filenames[i].find("\\"));
 		newS = filenames[i].substr(0, filenames[i].find("\\")) + "/" + s.substr(s.find("\\") + 1);
 
@@ -53,7 +55,8 @@ void TemplateLibrary::createLibrary() {
 
 	//the filenames are passed into a TemplateImage constructor and that
 	//TemplateImage is added to the library
-	for (int j = 0; j < count; j++) {
+	for (int j = 0; j < count; j++) 
+	{
 		TemplateImage newImage(filenames[j]);
 		this->addTemplateImage(newImage);
 	}
@@ -72,18 +75,21 @@ the key already exists, then the template image added to the vector associated
 with the key. If the key doesn't exist, then a new key is created along with
 its associated vector. The template image is then added to the new vector.
 */
-void TemplateLibrary::addTemplateImage(const TemplateImage& image) {
+void TemplateLibrary::addTemplateImage(const TemplateImage& image) 
+{
 
 	int key = image.getNumOfContours();
 	this->shapes.insert(image.getShape());
 
-	if (this->library.count(key) == 0) {
+	if (this->library.count(key) == 0) 
+	{
 		vector<TemplateImage> newShape;
 		newShape.push_back(image);
 
 		this->library[key] = newShape;
 	}
-	else {
+	else 
+	{
 		this->library.at(key).push_back(image);
 	}
 }
@@ -105,18 +111,23 @@ If the key formed by the first argument exists and the image name also
 exists, then that template image will be deleted from the map. This method
 returns true. 
 */
-bool TemplateLibrary::removeTemplateImage(const int &corners, const string &imageName) {
+bool TemplateLibrary::removeTemplateImage(const int &corners, const string &imageName) 
+{
 	int key = corners;
 
-	if (this->library.empty()) {
+	if (this->library.empty()) 
+	{
 		return false;
 	}
-	else if (this->library.count(key) != 0) {
+	else if (this->library.count(key) != 0) 
+	{
 		vector<TemplateImage> ref = this->library.at(key);
 
-		for(int i = 0; i < ref.size(); i++){
+		for(int i = 0; i < ref.size(); i++)
+		{
 			TemplateImage img = ref[i]; 
-			if (img.getImageName().compare(imageName) == 0) {
+			if (img.getImageName().compare(imageName) == 0) 
+			{
 				this->library.at(key).erase(this->library.at(key).begin() + i);
 				return true;
 			}
@@ -124,7 +135,8 @@ bool TemplateLibrary::removeTemplateImage(const int &corners, const string &imag
 
 		return false;
 	}
-	else {
+	else 
+	{
 		return false;
 	}
 }
@@ -143,17 +155,22 @@ then they key of that TemplateImage is passed in.
 */
 int TemplateLibrary::getContoursKey(const string &imageName) const {
 
-	if (this->library.empty()) {
+	if (this->library.empty()) 
+	{
 		return -1;
 	}
-	else {
+	else 
+	{
 		map<int, vector<TemplateImage>>::const_iterator elm;
-		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
+		for (elm = this->library.begin(); elm != this->library.end(); ++elm) 
+		{
 			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
-			for (int i = 0; i < val.size(); i++) {
-				if (val[i].getImageName().compare(imageName) == 0) {
+			for (int i = 0; i < val.size(); i++) 
+			{
+				if (val[i].getImageName().compare(imageName) == 0) 
+				{
 					return key;
 				}
 			}
@@ -178,20 +195,25 @@ Post-condition:
 If the key formed by the first argument exist and if the name of the 
 TemplateImage exists, then the corresponding TemplateImage is returned.
 */
-TemplateImage TemplateLibrary::getTemplateImage(const int &corners, const string &imageName) const {
+TemplateImage TemplateLibrary::getTemplateImage(const int &corners, const string &imageName) const 
+{
 	int key = corners;
 
-	if (this->library.empty()) {
+	if (this->library.empty()) 
+	{
 		TemplateImage empty;
 		return empty; 
 	}
-	else if (this->library.count(key) != 0) {
+	else if (this->library.count(key) != 0)
+	{
 		vector<TemplateImage> ref = this->library.at(key);
 
 		vector<TemplateImage>::const_iterator elm;
-		for (elm = ref.begin(); elm != ref.end(); ++elm) {
+		for (elm = ref.begin(); elm != ref.end(); ++elm) 
+		{
 			TemplateImage img = *elm; 
-			if (img.getImageName().compare(imageName) == 0) {
+			if (img.getImageName().compare(imageName) == 0) 
+			{
 				return img;
 			}
 		}
@@ -199,7 +221,8 @@ TemplateImage TemplateLibrary::getTemplateImage(const int &corners, const string
 		TemplateImage empty;
 		return empty;
 	}
-	else {
+	else 
+	{
 		TemplateImage empty;
 		return empty;
 	}
@@ -217,17 +240,21 @@ Post-condition:
 If the key formed by the argument passed in exists, then a vector containing all
 the TemplateImage objects will be returned.
 */
-vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int &corners) const {
+vector<TemplateImage> TemplateLibrary::getTemplateImageList(const int &corners) const 
+{
 	int key = corners;
 
-	if (this->library.empty()) {
+	if (this->library.empty()) 
+	{
 		vector<TemplateImage> empty;
 		return empty;
 	}
-	else if (this->library.count(key) != 0) {
+	else if (this->library.count(key) != 0) 
+	{
 		return this->library.at(key);
 	}
-	else {
+	else 
+	{
 		return this->getAllTemplateImages();
 	}
 }
@@ -242,16 +269,20 @@ The map should not be empty, or else an empty vector<int> will be returned.
 Post-condition:
 If the map is not empty, a vector containing all the keys is returned.
 */
-vector<int> TemplateLibrary::getAllKeys() const {
-	if (this->library.empty()) {
+vector<int> TemplateLibrary::getAllKeys() const 
+{
+	if (this->library.empty()) 
+	{
 		vector<int> empty;
 		return empty;
 	}
-	else {
+	else 
+	{
 		vector<int> keys;
 
 		map<int, vector<TemplateImage>>::const_iterator key;
-		for (key = this->library.begin(); key != this->library.end(); ++key) {
+		for (key = this->library.begin(); key != this->library.end(); ++key) 
+		{
 			keys.push_back(key->first);
 		}
 
@@ -271,22 +302,27 @@ Post-condition:
 If the map is not empty, a vector containing all the TemplateImage objects is 
 returned.
 */
-vector<TemplateImage> TemplateLibrary::getAllTemplateImages() const {
-	if (this->library.empty()) {
+vector<TemplateImage> TemplateLibrary::getAllTemplateImages() const 
+{
+	if (this->library.empty()) 
+	{
 
 		vector<TemplateImage> empty;
 		return empty;
 	}
-	else {
+	else 
+	{
 		vector<TemplateImage> images;
 
 		map<int, vector<TemplateImage>>::const_iterator elm;
-		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
+		for (elm = this->library.begin(); elm != this->library.end(); ++elm) 
+		{
 			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
 			vector<TemplateImage>::const_iterator elm;
-			for (elm = val.begin(); elm != val.end(); ++elm) {
+			for (elm = val.begin(); elm != val.end(); ++elm) 
+			{
 				images.push_back(*elm);
 			}
 		}
@@ -309,20 +345,25 @@ If the the key formed using the argument passed in exists in the map, then
 value of that key is deleted from the map. This value is a vector containing
 all the TemplateImages of that key. This method returns the deleted vector.
 */
-bool TemplateLibrary::removeTemplateImageList(const int &corners) {
-	if (this->library.empty()) {
+bool TemplateLibrary::removeTemplateImageList(const int &corners) 
+{
+	if (this->library.empty()) 
+	{
 		return false;
 	}
-	else {
+	else 
+	{
 		int key = corners;
 
-		if (this->library.count(key) != 0) {
+		if (this->library.count(key) != 0) 
+		{
 			vector<TemplateImage> ref = this->library.at(key);
 			this->library.at(key).clear();
 			this->library.erase(key);
 			return true;
 		}
-		else {
+		else 
+		{
 			return false;
 		}
 	}
@@ -338,15 +379,19 @@ The map should not be empty, or else the method will return false.
 Post-condition:
 If the map is not empty, all the elements are deleted from the map.
 */
-bool TemplateLibrary::emptyLibrary() {
-	if (this->library.empty()) {
+bool TemplateLibrary::emptyLibrary() 
+{
+	if (this->library.empty()) 
+	{
 		cout << "Library empty" << endl;
 		return false;
 	}
-	else {
+	else 
+	{
 
 		map<int, vector<TemplateImage>>::const_iterator elm;
-		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
+		for (elm = this->library.begin(); elm != this->library.end(); ++elm) 
+		{
 			int key = elm->first;
 			this->library.at(key).clear();
 		}
@@ -369,7 +414,8 @@ none
 Post-condition:
 Will return true or false, depending if the map is empty or not.
 */
-bool TemplateLibrary::isEmpty() const {
+bool TemplateLibrary::isEmpty() const 
+{
 	return this->library.empty();
 }
 
@@ -383,7 +429,8 @@ none.
 Post-condition:
 If the map is not empty, the total number of keys in the map is returned.
 */
-int TemplateLibrary::getNumberOfKeys() const {
+int TemplateLibrary::getNumberOfKeys() const 
+{
 	return static_cast<int>(this->library.size());
 }
 
@@ -398,20 +445,25 @@ Post-condition:
 If the map is not empty, the total number of TemplateObjects in the map is
 returned.
 */
-int TemplateLibrary::getNumberOfTemplateImages() const {
+int TemplateLibrary::getNumberOfTemplateImages() const 
+{
 	int count = 0;
 
-	if (this->library.empty()) {
+	if (this->library.empty()) 
+	{
 		return 0;
 	}
-	else {
+	else 
+	{
 
 		map<int, vector<TemplateImage>>::const_iterator elm;
-		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
+		for (elm = this->library.begin(); elm != this->library.end(); ++elm) 
+		{
 			int key = elm->first;
 			vector<TemplateImage> val = this->library.at(key);
 
-			for (int i = 0; i < val.size(); i++) {
+			for (int i = 0; i < val.size(); i++) 
+			{
 				count++;
 			}
 		}
@@ -432,20 +484,25 @@ If the map is not empty, each key with its corresponding value is printed to
 screen. The value is a vector of TemplateImage objects, so the name of each
 object is printed.
 */
-void TemplateLibrary::printLibrary() const{
-	if (this->library.empty()) {
+void TemplateLibrary::printLibrary() const
+{
+	if (this->library.empty()) 
+	{
 		cout << "Library empty" << endl;
 	}
-	else {
+	else 
+	{
 		map<int, vector<TemplateImage>>::const_iterator elm;
-		for (elm = this->library.begin(); elm != this->library.end(); ++elm) {
+		for (elm = this->library.begin(); elm != this->library.end(); ++elm) 
+		{
 			int key = elm->first;
 
 			std::cout << "Key: " << elm->first << endl;
 			vector<TemplateImage> val = this->library.at(key);
 
 			std::cout << "	Value: ";
-			for (int i = 0; i < val.size(); i++) {
+			for (int i = 0; i < val.size(); i++) 
+			{
 				std::cout << val[i].getImageName() << ", ";
 			}
 			std::cout << "" << endl;
@@ -463,7 +520,8 @@ none
 post-conditions:
 returns the folder path of the template images.
 */
-string TemplateLibrary::getTemplateImageFolderPath() const {
+string TemplateLibrary::getTemplateImageFolderPath() const 
+{
 	return this->templateImageFolderPath;
 }
 
@@ -478,15 +536,19 @@ post-conditions:
 If the map is not empty, then a vector of strings containing the type of
 shapes will be returned.
 */
-vector<string> TemplateLibrary::getAllShapes() const {
-	if (this->library.empty()) {
+vector<string> TemplateLibrary::getAllShapes() const 
+{
+	if (this->library.empty()) 
+	{
 		vector<string> empty;
 		return empty;
 	}
-	else {
+	else 
+	{
 		set<string>::const_iterator elm;
 		vector<string> shapes;
-		for (elm = this->shapes.begin(); elm != this->shapes.end(); ++elm) {
+		for (elm = this->shapes.begin(); elm != this->shapes.end(); ++elm) 
+		{
 			shapes.push_back(*elm);
 		}
 		return shapes;
