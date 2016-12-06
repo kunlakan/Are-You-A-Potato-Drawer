@@ -262,7 +262,8 @@ string drawRandomShape()
 	vector<string> availableShapes = dummyDr.getAllShapes();
 
 
-	int shapeIndex = getRandomNumber(availableShapes.size() - 1); //get random integer
+	int shapeIndex = getRandomNumber(availableShapes.size()); //get random integer
+	cout << shapeIndex;
 	theShape = availableShapes.at(shapeIndex); //map random number to vector of shapes
 
 	return theShape;
