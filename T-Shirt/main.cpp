@@ -41,12 +41,14 @@ const string hintWindowName = "Hint window";
 
 //variables for GUI
 string theShape; //shape that needs to be drawn by user
+Mat initImg;
 
 //variables that will be used for mouse callback
 bool buttonDown;	//LMB is being pressed
 bool started;		//game has started(false if in instruction page)
 bool firstClicked;  //detect first click to remove text("draw [shape]") on canvas
-Point prevPoint;
+bool submitted;		//true if user has pressed enter when done drawing
+Point prevPoint;	//keeps track of the mouse position(used for drawing line)
 
 //------------------------- onMouse(Mouse event callback function) --------------------------
 // Handles mouse events. Crrently clears canvas on first click and is responsible for
@@ -85,6 +87,14 @@ int getRandomNumber(int max);
 //------------------------------------------------------------------------------
 string drawRandomShape();
 
+//---------------------------- areEqual ------------------------------------------
+// compares 2 Mat images are equal
+//
+// precondition: images have the same size.
+// postcondition: return true if both images are equal
+//--------------------------------------------------------------------------------
+bool areEqual(Mat& imgA, Mat& imgB);
+
 
 //---------------------------------- init -------------------------------------
 // Initializes variables that will be used for GUI.
@@ -106,92 +116,17 @@ void init();
 //------------------------------------------------------------------------------
 void runApp();
 
-
+//===============================================================================================
+//
+//										MAIN
+//	
+//===============================================================================================
 int main(int argc, char* argv[]) {
 	
 	
 	init();
 	
 	runApp();
-	
-
-	
-
-	//imwrite("output.jpg", img);
-
-	//DrawingRecognition dr(input);
-	
-	/*
-	TemplateLibrary library;
-	library.createLibrary();
-	vector<string> shapes = library.getAllShapes();
-	
-	
-	TemplateImage get = library.getTemplateImage(6, "template_images/hexagon_6.jpg");
-	
-	vector<TemplateImage> getList = library.getTemplateImageList(4);
-
-	vector<int> allKeys = library.getAllKeys();
-
-	vector<TemplateImage> allImages = library.getAllTemplateImages();
-
-	int key = library.getContoursKey("template_images/triangle_3.jpg");
-
-	//std::cout << "Before" << endl;
-	//library.printLibrary();
-	//std::cout << "" << endl;
-	//std::cout << "After" << endl;
-
-	//bool del = library.removeTemplateImage(5, "template_images/rectangle_4.jpg");
-	//if (del) {
-	//	cout << "deleted" << endl;
-	//}
-	//else {
-	//	cout << "NOT deleted" << endl;
-	//}
-	
-	//bool delList = library.removeTemplateImageList(6);
-
-	//library.emptyLibrary();
-	//shapes = library.getAllShapes();
-	
-	for (int i = 0; i < 500; i++) {
-
-		//std::cout << key << endl;
-		
-		//for (int j = 0; j < allKeys.size(); j++) {
-			//std::cout << allKeys[j] << endl;
-		//}
-		//std::cout << "" << endl;
-		
-		//for (int j = 0; j < allImages.size(); j++) {
-			//std::cout << allImages[j].getImageName() << endl;
-		//}
-		//std::cout << "" << endl;
-		
-		//if (library.isEmpty()) {
-			//std::cout << "empty" << endl;
-		//}
-		//else {
-			//std::cout << "not empty" << endl;
-		//}
-
-		//std::cout << get.getImageName() << endl;
-
-		
-		//for (int j = 0; j < getList.size(); j++) {
-			//std::cout << getList[j].getImageName() << endl;
-		//}
-		//std::cout << "" << endl; 
-
-		//for (int j = 0; j < shapes.size(); j++) {
-			//std::cout << shapes[j] << endl;
-		//}
-		//std::cout << "" << endl;
-
-		library.printLibrary();
-		std::cout << "" << endl; 
-	} */
 }
 
 static void onMouse(int event, int x, int y, int flags, void* imgptr) 
@@ -204,6 +139,8 @@ static void onMouse(int event, int x, int y, int flags, void* imgptr)
 			//update mouse position
 			prevPoint.x = x;
 			prevPoint.y = y;
+
+			
 		}
 
 		if (started && !firstClicked)
@@ -236,7 +173,7 @@ static void onMouse(int event, int x, int y, int flags, void* imgptr)
 
 		line(img, prevPoint, pt1, color, thickness, lineStyle, shift); //draw line
 		imshow(canvasName, img);	//update canvas
-		waitKey(1);
+		//waitKey(1);
 	}
 
 	if (event == EVENT_MOUSEMOVE) //mouse is moved
@@ -250,7 +187,7 @@ static void onMouse(int event, int x, int y, int flags, void* imgptr)
 
 int getRandomNumber(int max)
 {
-	srand(time(0));
+	srand((int)time(0));
 	int randomNum = rand() % max;
 	return randomNum;
 }
@@ -262,8 +199,7 @@ string drawRandomShape()
 	vector<string> availableShapes = dummyDr.getAllShapes();
 
 
-	int shapeIndex = getRandomNumber(availableShapes.size()); //get random integer
-	cout << shapeIndex;
+	int shapeIndex = getRandomNumber((int)availableShapes.size()); //get random integer
 	theShape = availableShapes.at(shapeIndex); //map random number to vector of shapes
 
 	return theShape;
@@ -274,14 +210,16 @@ void init()
 	started = false;
 	buttonDown = false;
 	firstClicked = false;
+	submitted = false;
 	prevPoint = Point(0, 0);
 	drawRandomShape(); //get shape to be drawn by user
+	initImg = imread(canvasFileName); //get empty canvas
 }
 
 void runApp()
 {
 
-	Mat initImg = imread(canvasFileName); //get empty canvas
+	
 	Mat img = initImg.clone(); 
 
 	//get instruction image
@@ -310,25 +248,31 @@ void runApp()
 
 		if (key == ENTER) //enter key is pressed
 		{
-			if (started) //game is on going -> show result of drawing
+			if (submitted)
 			{
-				//save final result
-				string outputFileName = "output.jpg";
-				imwrite(outputFileName, img);
-				DrawingRecognition dr(outputFileName); //create draw recognition for the final drawing
+				drawRandomShape();
+				img = initImg.clone();
 
-				string result = dr.findBestMatch(); //get best match
 
-				string out = ""; 
-				if (result == theShape) //drawing matched the target shape
-				{
-					out = "Nice " + result + " drawing";
-				}
-				else //drawing didn't match
-				{
-					out = "Sorry, it looks like a potato";
-				}
-				
+				//initialize properties of text 
+				string toDrawEcho = "Draw a " + theShape + "."; //text to display
+				Point textPos = cvPoint(100, 300);
+				int textScale = 1;
+				Scalar textColor = cvScalar(0, 0, 0);
+				int textThickness = 1;
+
+				putText(img, toDrawEcho, textPos, FONT_HERSHEY_COMPLEX, textScale, textColor, textThickness, CV_AA);//draw text
+
+				init();
+			}
+			else if (started) //game is on going -> show result of drawing
+			{
+				//initialize text properties
+				Point penPos = cvPoint(10, 60);
+				Scalar penColor = cvScalar(250, 250, 250);
+				int penScale = 1; // negative value to fill in
+				int penThickness = 1;
+
 				//initialize rectangle properties
 				Point p1 = Point(10, 10);
 				Point p2 = Point(590, 70);
@@ -336,18 +280,63 @@ void runApp()
 				int recThickness = -1; // negative value to fill in
 				int recLineType = 8;
 				int recShift = 0;
-				rectangle(img, p1, p2, recColor, recThickness, recLineType, recShift); // draw rectangle
-				
-				//initialize text properties
-				Point penPos = cvPoint(10, 60);
-				Scalar penColor = cvScalar(250, 250, 250);
-				int penScale = 1; // negative value to fill in
-				int penThickness = 1;
-				putText(img, out, penPos, FONT_HERSHEY_COMPLEX, penScale, penColor, penThickness, CV_AA); //drawText
+				string out = "";
+
+				if (firstClicked)
+				{
+					//save final result
+					string outputFileName = "output.jpg";
+					imwrite(outputFileName, img);
+
+
+					if (areEqual(img, initImg.clone())) //user hasn't drawn anything
+					{
+						out = "You haven't drawn anything";
+						//print out a warning
+						rectangle(img, p1, p2, recColor, recThickness, recLineType, recShift); // draw rectangle
+						putText(img, out, penPos, FONT_HERSHEY_COMPLEX, penScale, penColor, penThickness, CV_AA); //drawText
+						firstClicked = false;
+					}
+					else 
+					{
+
+						DrawingRecognition dr(outputFileName); //create draw recognition for the final drawing
+
+						string result = dr.findBestMatch(); //get best match
+
+						
+						if (result == theShape) //drawing matched the target shape
+						{
+							out = "Nice " + result + " drawing";
+
+							//initialize text properties
+							string toDrawEcho = "Press 'enter' 2x to continue"; //text to display
+							Point textPos = cvPoint(50, 590);
+							int textScale = 1;
+							Scalar textColor = cvScalar(0, 0, 0);
+							int textThickness = 1;
+
+							putText(img, toDrawEcho, textPos, FONT_HERSHEY_COMPLEX, textScale, textColor, textThickness, CV_AA);//draw text
+
+							submitted = true;
+						}
+						else //drawing didn't match
+						{
+							out = "Sorry, it looks like a potato";
+						}
+
+
+						rectangle(img, p1, p2, recColor, recThickness, recLineType, recShift); // draw rectangle
+						putText(img, out, penPos, FONT_HERSHEY_COMPLEX, penScale, penColor, penThickness, CV_AA); //drawText
+
+						
+					}
+				}
+
 				
 			}
 
-			else //game just launched/just about to start
+			else if (!started) //game just launched/just about to start
 			{
 				if (!firstClicked) //from instruction page -> tell user what to draw page
 				{
@@ -384,6 +373,7 @@ void runApp()
 			img = initImg.clone();
 			imshow(canvasName, img);
 
+
 			init();		//restart data
 
 			//tell user what to draw
@@ -414,4 +404,18 @@ void runApp()
 		}
 
 	}//end of while statement
+}
+
+bool areEqual(Mat& imgA, Mat& imgB)
+{
+	Mat temp;
+	Mat outA;
+	Mat outB;
+
+	//convert images to grayscale
+	cvtColor(imgA, outA, CV_BGR2GRAY);
+	cvtColor(imgB, outB, CV_BGR2GRAY);
+	
+	compare(outA, outB, temp, CMP_NE); 
+	return (countNonZero(temp) == 0);
 }
