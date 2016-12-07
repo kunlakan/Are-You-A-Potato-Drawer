@@ -12,9 +12,6 @@
 //------------------------------------------------------------------------------
 
 #include "DrawingRecognition.h"
-#include <iostream>
-
-using namespace std;
 
 
 //----------------------------- Default Constructor ----------------------------
@@ -57,9 +54,9 @@ DrawingRecognition::~DrawingRecognition() {}
 
 
 //------------------------------ findBestMatch() -------------------------------
-// *** Region of Interest
-// Precondition:	None
-// Postcondition:	None
+// find the best match of the searchIMG with the template images.
+// Precondition:	libraryTMPL must be created with all templates stored.
+// Postcondition:	name of the best match shape is returned
 //------------------------------------------------------------------------------
 string DrawingRecognition::findBestMatch()
 {
@@ -71,7 +68,6 @@ string DrawingRecognition::findBestMatch()
 
 	// Get contours of the searchIMG
 	int numContours = getContour(inputIMG, contours);
-	cout << "numContours " << numContours << endl;
 
 	// Get list of all templates that have the same number of contours
 	vector<TemplateImage> listTMPL = libraryTMPL.getTemplateImageList(numContours);
@@ -87,43 +83,28 @@ string DrawingRecognition::findBestMatch()
 	for (int i = 0; i < listTMPL.size(); i++)
 	{		
 		getContour(listTMPL[i].getImage(), TMPLcontours);
+		score = matchShapes(contours, TMPLcontours, 1, 0.0);
 
-		//while (inputIMG.rows >= listTMPL[i].getImage().rows || inputIMG.cols >= listTMPL[i].getImage().cols)
-		//{
-			score = matchShapes(contours, TMPLcontours, 1, 0.0);
+		if (score < bestMatchDistance)
+		{
+			if (score == 0)
+				return listTMPL[i].getShape();
 
-			if (score < bestMatchDistance)
-			{
-				if (score == 0)
-					return listTMPL[i].getShape();
-
-				bestMatchDistance = score;
-				bestMatchTMPL = listTMPL[i];
-			}
-
-			//resize(inputIMG, inputIMG, Size(), RESIZE_PERCENTAGE, RESIZE_PERCENTAGE, INTER_AREA);
-			//getContour(inputIMG, contours);
-
-			//cout << distance << endl;
-			//cout << listTMPL[i].getShape() << endl;
-		//}
-
-		//searchIMG.copyTo(inputIMG);
-		//getContour(inputIMG, contours);
+			bestMatchDistance = score;
+			bestMatchTMPL = listTMPL[i];
+		}
 	}
-
-	//cout << "distance " << bestMatchDistance << endl;
-	cout << bestMatchTMPL.getShape() << endl;
-	//cin.get();
 
 	return bestMatchTMPL.getShape();
 }
 
 //---------------------------- PRIVATE: getContour -----------------------------
-// Detects edge of the input image.
+// Get contours of input image and its number of polygon curves.
 // Preconditions:	- input must be a gray-level image.
-//					- output must be declaired outside of this function.
-// Postconditions:	output is an edge image of the input.
+//					- output vector of Poitn must be declaired outside of this
+//					  function.
+// Postconditions:	- output stores vector of contours
+//					- number of polygon curves is returned
 //------------------------------------------------------------------------------
 int DrawingRecognition::getContour(const Mat &input, vector<Point> &output)
 {
@@ -159,17 +140,6 @@ void DrawingRecognition::detectEdge(const Mat &input, Mat &output)
 	flip(input, output, 1);
 	GaussianBlur(output, output, Size(7, 7), sigmaX, sigmaY);
 	Canny(output, output, threshold1, threshold2);
-}
-
-//----------------------------- PRIVATE: rotate90 ------------------------------
-// Rotate input image by 90 degree.
-// Preconditions:	None.
-// Postconditions:	output is an edge image of the input.
-//------------------------------------------------------------------------------
-void DrawingRecognition::rotate90(Mat &input)
-{
-	transpose(input, input);
-	flip(input, input, 0);
 }
 
 //-------------------------------- getAllShapes --------------------------------

@@ -3,7 +3,12 @@
 // Created by Kunlakan Cherdchusilp
 // Created on 11/16/2016
 //------------------------------------------------------------------------------
-// ObjectRecognition class is
+// Recoginzing drawing that is passed in to the program.
+//
+// ASSUMPTION:
+//		- All templates used must be in grayscale.
+//		- The detection may not be accurate due to the various doodling styles
+//		  of individuals.
 //------------------------------------------------------------------------------
 
 #include <opencv2/core/core.hpp>
@@ -13,7 +18,6 @@
 #include "TemplateLibrary.h"
 #include "opencv2/shape.hpp"
 
-using namespace std;
 using namespace cv;
 
 class DrawingRecognition {
@@ -49,6 +53,11 @@ public:
 	~DrawingRecognition();
 
 
+	//------------------------------ findBestMatch() -------------------------------
+	// find the best match of the searchIMG with the template images.
+	// Precondition:	libraryTMPL must be created with all templates stored.
+	// Postcondition:	name of the best match shape is returned
+	//------------------------------------------------------------------------------
 	string findBestMatch();
 
 	//-------------------------------- getAllShapes --------------------------------
@@ -59,8 +68,6 @@ public:
 	vector<string> getAllShapes();
 
 private:
-	const float RESIZE_PERCENTAGE = 0.8;
-
 	Mat searchIMG;
 	TemplateLibrary libraryTMPL;
 	
@@ -72,14 +79,13 @@ private:
 	//------------------------------------------------------------------------------
 	void detectEdge(const Mat &input, Mat &output);
 
-	int getContour(const Mat &input, vector<Point> &output);
-
-	//----------------------------- PRIVATE: rotate90 ------------------------------
-	// Rotate input image by 90 degree.
-	// Preconditions:	None.
-	// Postconditions:	output is an edge image of the input.
+	//---------------------------- PRIVATE: getContour -----------------------------
+	// Get contours of input image and its number of polygon curves.
+	// Preconditions:	- input must be a gray-level image.
+	//					- output vector of Poitn must be declaired outside of this
+	//					  function.
+	// Postconditions:	- output stores vector of contours
+	//					- number of polygon curves is returned
 	//------------------------------------------------------------------------------
-	void rotate90(Mat &input);
-
-	//float hausdorffDistance(const vector<Point> &a, const vector<Point> &b);
+	int getContour(const Mat &input, vector<Point> &output);
 };
